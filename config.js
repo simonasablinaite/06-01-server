@@ -32,3 +32,5 @@ const options = config[env] ? config[env] : config.dev;
 
 console.log(nodeEnv);
 console.log(options);
+
+export default options;
