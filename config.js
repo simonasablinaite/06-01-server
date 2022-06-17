@@ -30,25 +30,25 @@ config.prod = {
         password: 'vcbldc65465165fg65v6f15g21v',
         database: 'batai-5v542c1v2fs'
     },
-    // cache: {
-    //     0 * 60,
-    //         off: default: 60 * 60,
-    //     periods: {
-    //         css: 60 * 60,
-    //         js: 60 * 60,
-    //         svg: 60 * 60,
-    //         png: 60 * 60,
-    //         jpg: 60 * 60,
-    //         ico: 60 * 60,
-    //         woff2: 60 * 60,
-    //         woff: 60 * 60,
-    //         ttf: 660 * 60,
-    //         eot: 60 * 60,
-    //         webmanifest: 60 * 60,
-    //         pdf: 60 * 60,
-    //         json: 60 * 60,
-    //     },
-    //}
+    cache: {
+        default: 60 * 60,
+        periods: {
+            css: 60 * 60,
+            js: 60 * 60,
+            svg: 60 * 60,
+            png: 60 * 60,
+            jpg: 60 * 60,
+            ico: 60 * 60,
+            woff2: 60 * 60,
+            woff: 60 * 60,
+            ttf: 60 * 60,
+            otf: 60 * 60,
+            eot: 60 * 60,
+            webmanifest: 60 * 60,
+            pdf: 60 * 60,
+            json: 60 * 60,
+        },
+    }
 }
 
 const nodeEnv = process.env.NODE_ENV;
