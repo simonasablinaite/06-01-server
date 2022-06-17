@@ -5,11 +5,14 @@ const app = {};
 // programa inicijuosime panaudojus f-jas:
 
 app.init = () => {
-    // Susikurti reikiamus busimus FOLDERIUS;
+    // Susikurti reikiamus busimus reikiamus FOLDERIUS;
     // susikurti reikiamus busimus FAILUS;
+
     // prisijungti prie duomenu bazes (DB);
-    // paleisti pacio serverio logika (perduodame prisijungima prie BD);
+
+    // paleidiama pacio serverio logika (perduodame prisijungima prie BD);
     server.init();
+
     // paleidziami papildomi nuolatiniai procesai:
     // * istrinami nereikalingi failai;
     // * suarchivuojami retai naudojami failai;
