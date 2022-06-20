@@ -1,10 +1,9 @@
 import { PageTemplate } from "../lib/Page.Template.js";
 
-
 class Page404 extends PageTemplate {
   constructor() {
     super()
-    this, title = '404 | server';
+    this, title = '404 | Server';
   }
 
   mainHTML() {
@@ -12,7 +11,6 @@ class Page404 extends PageTemplate {
                 <h1>404 page ⛔</h1>
             </div>`
   }
-
 }
 
 export { Page404 };
