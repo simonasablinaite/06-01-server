@@ -11,4 +11,8 @@
 @import '../components/form.css';
 
 /* CUSTOM STYLE BELOW THIS COMMENT LINE, PLEASE*/
-
+main.container > row {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}

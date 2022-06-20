@@ -2,8 +2,8 @@ import { PageTemplate } from "../lib/Page.Template.js";
 
 
 class PageLogin extends PageTemplate {
-  constructor() {
-    super();
+  constructor(data) {
+    super(data);
   }
   mainHTML() {
     return `<div class="row">
