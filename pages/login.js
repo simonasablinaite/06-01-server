@@ -1,17 +1,15 @@
-import { PageTemplate } from "../lib/Page.Template.js";
-
+import { PageTemplate } from "../lib/PageTemplate.js";
 
 class PageLogin extends PageTemplate {
   constructor(data) {
     super(data);
   }
+
   mainHTML() {
     return `<div class="row">
-              <h1>Login page 🔑</h1>
-              <p>Stai kaip atrodo atidarantys (&ltdiv&gt) ir uzdarantys(&ltdiv&gt) DIV tagai</p>
-              </div>`
-
+                    <h1>Login page 🔑</h1>
+                </div>`;
   }
 }
 
-export { PageLogin }; 
+export { PageLogin };

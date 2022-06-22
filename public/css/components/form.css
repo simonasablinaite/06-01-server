@@ -2,8 +2,19 @@
   display: flex;
   width: 100%;
   max-width: 400px;
+  margin-top: 10px;
   flex-direction: column;
-  gap: 10px;
+  gap: 5px;
+}
+.form > .notifications {
+  display: none;
+  padding: 10px 20px;
+  border: 2px solid #f00;
+  background-color: #f003;
+  color: #333;
+}
+.form > .notifications.show {
+  display: block;
 }
 .form > input {
   font-size: 20px;
@@ -11,6 +22,8 @@
   line-height: 1.8em;
 }
 .form > button {
-  font-size: 20px;
-  line-height: 1.8em;
+  font-size: 15px;
+  font-style: italic;
+  line-height: 1.5em;
+  background-color: rgb(55, 160, 55);
 }

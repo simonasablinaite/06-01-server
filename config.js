@@ -1,17 +1,15 @@
-console.log(process.env.NODE_ENV);
-
 const config = {};
 
 config.dev = {
     name: 'dev',
     httpPort: 6969,
-    passwordLenght: 2,
+    passwordLength: 2,
     defaultLanguage: 'en',
     languages: ['en', 'lt', 'ee'],
     db: {
         user: 'root',
         password: 'admin',
-        database: 'batai'
+        database: 'batai',
     },
     cache: {
         default: 0,
@@ -22,13 +20,13 @@ config.dev = {
 config.prod = {
     name: 'prod',
     httpPort: 42069,
-    passwordLenght: 12,
+    passwordLength: 12,
     defaultLanguage: 'lt',
     languages: ['en', 'lt'],
     db: {
         user: 'node_batai_user',
-        password: 'vcbldc65465165fg65v6f15g21v',
-        database: 'batai-5v542c1v2fs'
+        password: 'r84tr5s25e84rrg52f5er84r5ert8r4g55e',
+        database: 'batai-r5fe1d15',
     },
     cache: {
         default: 60 * 60,
@@ -55,8 +53,8 @@ const nodeEnv = process.env.NODE_ENV;
 const env = nodeEnv ? nodeEnv : 'dev';
 const options = config[env] ? config[env] : config.dev;
 
-console.log('Kur dirba kodas?');
-console.log('Kas parasyta terminale:, nodeEnv');
-console.log('Kokia aplinka turiu paleisti:', env);
+// console.log('kur dirba kodas?');
+// console.log('Ka parasiau terminale:', nodeEnv);
+// console.log('Kokia aplinka turesiu paleisti:', env);
 
-export default options; 
+export default options;

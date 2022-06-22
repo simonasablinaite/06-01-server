@@ -5,14 +5,14 @@
 /* 3rd-party */
 
 /* components */
-@import '../components/header.css';
 @import '../components/button.css';
 @import '../components/footer.css';
 @import '../components/form.css';
+@import '../components/header.css';
 
-/* CUSTOM STYLE BELOW THIS COMMENT LINE, PLEASE*/
-main.container > row {
-  display: flex;
-  align-items: center;
-  flex-direction: column;
+/* CUSTOM STYLE BELOW THIS COMMENT LINE, PLEASE */
+main.container > .row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }

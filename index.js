@@ -2,25 +2,21 @@ import { server } from './lib/server.js';
 
 const app = {};
 
-// programa inicijuosime panaudojus f-jas:
-
 app.init = () => {
-    // Susikurti reikiamus busimus reikiamus FOLDERIUS;
-    // susikurti reikiamus busimus FAILUS;
+    // susikurti busimus reikiamus folder'ius
+    // susikurti busimus reikiamus failus, pvz.: robots.txt
 
-    // prisijungti prie duomenu bazes (DB);
+    // prisijungti prie duomenu bazes (DB)
 
-    // paleidiama pacio serverio logika (perduodame prisijungima prie BD);
+    // paleidziam pacio serverio logika (perduodame prisijungima prie DB)
     server.init();
 
-    // paleidziami papildomi nuolatiniai procesai:
-    // * istrinami nereikalingi failai;
-    // * suarchivuojami retai naudojami failai;
-    // * prasukami reikiami API (3th-party info, pvz: valiutu kursai, orai);
-    // * pasitikrinama ar nera tokiu vartotoju, kurie yra prisijunge neturedami tam teises, o jei tokiu yra - atjungti!
+    // paleidzia papildomus nuolatinius procesus:
+    // - issitrinti nebereikalingus failus
+    // - suarchivuoti retai naudojamus failus
+    // - prasukti reikiamus API (3rd-party info, pvz.: valiutu kursai, orai)
+    // - pasitikrinti, jog vartotojai, kurie neturi teises buti prisijunge, jog ir nera prisijunge, o jei yra - atjungiame!!!
 }
-
-// paleidziame programa:
 
 app.init();
 

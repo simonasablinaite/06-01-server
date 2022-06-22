@@ -5,10 +5,9 @@
 /* 3rd-party */
 
 /* components */
-@import '../components/header.css';
 @import '../components/button.css';
 @import '../components/footer.css';
 @import '../components/form.css';
+@import '../components/header.css';
 
-/* CUSTOM STYLE BELOW THIS COMMENT LINE, PLEASE*/
-
+/* CUSTOM STYLE BELOW THIS COMMENT LINE, PLEASE */
