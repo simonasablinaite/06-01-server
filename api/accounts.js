@@ -1,4 +1,4 @@
-import { { IsValid } from "../lib/is-valid//IsValid.js";
+import { IsValid } from "../lib/is-valid//IsValid.js";
 
 const handler = {};
 
@@ -34,7 +34,9 @@ handler._innerMethods.post = (data, res) => {
       - fullname
       - isitikinti, kad atejusiame objekte nera kitu key's apart: emai;, password, fullname;
 */
-
+  if (Object.keys(payload).length > 3) {
+    return res.end(JSON.stringify('Atsiustuose duomenyse gali buti tik: fullname, email ir pass'))
+  }
   const { fullname, email, pass } = payload;
 
   const [fullnameErr, fullnamemsg] = IsValid.fullname(fullname);
