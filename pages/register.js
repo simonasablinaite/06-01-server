@@ -1,29 +1,45 @@
-function pageRegister() {
-  return `<!DOCTYPE html>
-  <html lang="en">
+import { PageTemplate } from "../lib/PageTemplate.js";
+import config from '../config.js';
 
-      <head>
-      <meta charset="UTF-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Server</title>
-      <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-      <link rel="apple-touch-icon" sizes="180x180" href="/favicon/apple-touch-icon.png">
-      <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-32x32.png">
-      <link rel="icon" type="image/png" sizes="16x16" href="/favicon/favicon-16x16.png">
-      <link rel="manifest" href="/favicon/site.webmanifest">
-      <link rel="mask-icon" href="/favicon/safari-pinned-tab.svg" color="#5bbad5">
-      <meta name="msapplication-TileColor" content="#da532c">
-      <meta name="theme-color" content="#ffffff">
-      <link rel="stylesheet" href="/css/base/base.css">
-      </head>
-      
-      <body>
-      <h1>Register page 🗒</h1> 
-      </body>
-                                      
-      </html>`;
+class PageRegister extends PageTemplate {
+        constructor(data) {
+                super(data);
+                this.pageCSSfileName = 'register';
+                this.pageJSfileName = 'register';
+        }
 
+        mainHTML() {
+                const isDev = config.name === 'dev';
+                const formValues = {
+                        fullname: isDev ? 'Chuck Norris' : '',
+                        email: isDev ? 'chuck@norris.com' : '',
+                        pass: isDev ? 'chucknorrischucknorris' : '',
+                        repass: isDev ? 'chucknorrischucknorris2' : '',
+                }
+                return `<div class="row">
+                    <h1>Register</h1>
+                    <p>Register to get exited!</p>
+                    <form class="form" action="/api/account" method="POST">
+                        <div class="notifications"></div>
+                        <label for="fullname">Fullname</label>
+                        <input id="fullname" name="fullname" data-validation="fullname" type="text" placeholder="Enter value..."
+                                autocomplete="name" required autofocus value="${formValues.fullname}">
+                        
+                        <label for="email">Email</label>
+                        <input id="email" name="email" data-validation="email" type="email" placeholder="Enter value..."
+                                autocomplete="email" required value="${formValues.email}">
+                        <label for="pass">Password</label>
+                        <input id="pass" name="pass" data-validation="password" type="password" placeholder="Enter value..."
+                                autocomplete="new-password" required value="${formValues.pass}">
+                        <label for="repass">Repeat password</label>
+                        <input id="repass" name="repass" data-validation="password" type="password" placeholder="Enter value..."
+                                autocomplete="new-password" required value="${formValues.repass}">
+                        <input type="checkbox" name="tos" id="tos" required>
+                        <label for="tos">Agree to terms and service conditions</label>
+                        <button type="submit">Register</button>
+                    </form>
+                </div>`;
+        }
 }
 
-export { pageRegister };
+export { PageRegister };
