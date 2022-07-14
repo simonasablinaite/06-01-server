@@ -2,21 +2,21 @@ import { PageTemplate } from "../lib/PageTemplate.js";
 import config from '../config.js';
 
 class PageRegister extends PageTemplate {
-        constructor(data) {
-                super(data);
-                this.pageCSSfileName = 'auth';
-                this.pageJSfileName = 'register';
-        }
+    constructor(data) {
+        super(data);
+        this.pageCSSfileName = 'auth';
+        this.pageJSfileName = 'register';
+    }
 
-        mainHTML() {
-                const isDev = config.name === 'dev';
-                const formValues = {
-                        fullname: isDev ? 'Chuck Norris' : '',
-                        email: isDev ? 'chuck@norris.com' : '',
-                        pass: isDev ? 'chuck@norris.com' : '',
-                        repass: isDev ? 'chuck@norris.com2' : '',
-                }
-                return `<div class="row">
+    mainHTML() {
+        const isDev = config.name === 'dev';
+        const formValues = {
+            fullname: isDev ? 'Chuck Norris' : '',
+            email: isDev ? 'chuck@norris.com' : '',
+            pass: isDev ? 'chuck@norris.com' : '',
+            repass: isDev ? 'chuck@norris.com2' : '',
+        }
+        return `<div class="row">
                     <h1>Register</h1>
                     <p>Register to get exited!</p>
                     <form class="form" action="/api/account" method="POST">
@@ -39,7 +39,7 @@ class PageRegister extends PageTemplate {
                         <button type="submit">Register</button>
                     </form>
                 </div>`;
-        }
+    }
 }
 
 export { PageRegister };

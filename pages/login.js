@@ -2,19 +2,19 @@ import { PageTemplate } from "../lib/PageTemplate.js";
 import config from '../config.js';
 
 class PageLogin extends PageTemplate {
-  constructor(data) {
-    super(data);
-    this.pageCSSfileName = 'auth';
-    this.pageJSfileName = 'login';
-  }
-
-  mainHTML() {
-    const isDev = config.name === 'dev';
-    const formValues = {
-      email: isDev ? 'chuck@norris.com' : '',
-      pass: isDev ? 'chuck@norris.com' : '',
+    constructor(data) {
+        super(data);
+        this.pageCSSfileName = 'auth';
+        this.pageJSfileName = 'login';
     }
-    return `<div class="row">
+
+    mainHTML() {
+        const isDev = config.name === 'dev';
+        const formValues = {
+            email: isDev ? 'chuck@norris.com' : '',
+            pass: isDev ? 'chuck@norris.com' : '',
+        }
+        return `<div class="row">
                     <h1>Login</h1>
                     <p>Login to get exited!</p>
                     <form class="form" action="/api/token" method="POST">
@@ -28,7 +28,7 @@ class PageLogin extends PageTemplate {
                         <button type="submit">Login</button>
                     </form>
                 </div>`;
-  }
+    }
 }
 
 export { PageLogin };

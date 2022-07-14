@@ -5,268 +5,200 @@ import { utils } from "../lib/utils.js";
 const handler = {};
 
 handler.account = async (data, callback) => {
-  // kliento intensija - ka jis nori daryti?
-  const acceptableMethods = ['get', 'post', 'put', 'delete'];
+    // kliento intensija - ka jis nori daryti?
+    const acceptableMethods = ['get', 'post', 'put', 'delete'];
 
-  if (acceptableMethods.includes(data.httpMethod)) {
-    const httpMethodFunc = handler._innerMethods[data.httpMethod];
-    return await httpMethodFunc(data, callback);
-  }
+    if (acceptableMethods.includes(data.httpMethod)) {
+        const httpMethodFunc = handler._innerMethods[data.httpMethod];
+        return await httpMethodFunc(data, callback);
+    }
 
-  return callback(405, {
-    msg: 'Tavo norimas HTTPmethod yra nepalaikomas',
-  });
+    return callback(405, ApiResponse.error('Tavo norimas HTTPmethod yra nepalaikomas'));
 }
 
 handler._innerMethods = {};
 
 // POST - sukuriame paskyra
 handler._innerMethods.post = async (data, callback) => {
-  const { payload } = data;
+    const { payload } = data;
 
-  /*
-  1) patikrinti, ar teisinga info (payload):
-      - email
-      - pass
-      - fullname
-      - isitikinti, jog atejusiame objekte nera kitu key's apart: email, fullname ir password
-  */
+    /*
+    1) patikrinti, ar teisinga info (payload):
+        - email
+        - pass
+        - fullname
+        - isitikinti, jog atejusiame objekte nera kitu key's apart: email, fullname ir password
+    */
 
-  const [validErr, validMsg] = utils.objectValidator(payload, {
-    required: ['fullname', 'email', 'pass'],
-  });
-
-  if (validErr) {
-    return callback(400, {
-      msgType: 'error',
-      msg: validMsg,
+    const [validErr, validMsg] = utils.objectValidator(payload, {
+        required: ['fullname', 'email', 'pass'],
     });
-  }
 
-  const { fullname, email, pass } = payload;
+    if (validErr) {
+        return callback(400, ApiResponse.error(validMsg));
+    }
 
-  const [fullnameErr, fullnameMsg] = IsValid.fullname(fullname);
-  if (fullnameErr) {
-    return callback(400, {
-      msgType: 'error',
-      msg: fullnameMsg,
-    });
-  }
+    const { fullname, email, pass } = payload;
 
-  const [emailErr, emailMsg] = IsValid.email(email);
-  if (emailErr) {
-    return callback(400, {
-      msgType: 'error',
-      msg: emailMsg,
-    });
-  }
+    const [fullnameErr, fullnameMsg] = IsValid.fullname(fullname);
+    if (fullnameErr) {
+        return callback(400, ApiResponse.error(fullnameMsg));
+    }
 
-  const [passErr, passMsg] = IsValid.password(pass);
-  if (passErr) {
-    return callback(400, {
-      msgType: 'error',
-      msg: passMsg,
-    });
-  }
+    const [emailErr, emailMsg] = IsValid.email(email);
+    if (emailErr) {
+        return callback(400, ApiResponse.error(emailMsg));
+    }
 
-  /*
-  2) ar toks vartotojas jau egzistuoja
-      - jei taip - error
-      - jei ne - tęsiam
-  */
+    const [passErr, passMsg] = IsValid.password(pass);
+    if (passErr) {
+        return callback(400, ApiResponse.error(passMsg));
+    }
 
-  // accounts/${user-email}.json
-  const [readErr] = await file.read('accounts', email + '.json');
-  if (!readErr) {
-    return callback(400, {
-      msgType: 'error',
-      msg: 'Paskyra jau egzistuoja',
-    })
-  }
+    /*
+    2) ar toks vartotojas jau egzistuoja
+        - jei taip - error
+        - jei ne - tęsiam
+    */
 
-  /*
-  3) issaugoti duomenis (payload)
-      - jei pavyko - paskyra sukurta
-          - siunciam patvirtinimo laiska
-      - jei nepavyko - error
-  */
+    // accounts/${user-email}.json
+    const [readErr] = await file.read('accounts', email + '.json');
+    if (!readErr) {
+        return callback(400, ApiResponse.error('Paskyra jau egzistuoja'))
+    }
 
-  delete payload.pass;
-  payload.hashedPassword = utils.hash(pass)[1];
-  payload.lastLoginDate = 0;
-  payload.registrationData = Date.now();
-  payload.browser = data.user.browser;
+    /*
+    3) issaugoti duomenis (payload)
+        - jei pavyko - paskyra sukurta
+            - siunciam patvirtinimo laiska
+        - jei nepavyko - error
+    */
 
-  const [createErr] = await file.create('accounts', email + '.json', payload);
-  if (createErr) {
-    return callback(500, {
-      msgType: 'error',
-      msg: 'Nepavyko sukurti paskyrtos del vidines serverio klaidos. Pabandykite veliau',
-    })
-  }
+    delete payload.pass;
+    payload.hashedPassword = utils.hash(pass)[1];
+    payload.lastLoginDate = 0;
+    payload.registrationData = Date.now();
+    payload.browser = data.user.browser;
 
-  return callback(201, {
-    msgType: 'redirect',
-    href: '/login',
-  });
+    const [createErr] = await file.create('accounts', email + '.json', payload);
+    if (createErr) {
+        return callback(500, ApiResponse.error('Nepavyko sukurti paskyrtos del vidines serverio klaidos. Pabandykite veliau'))
+    }
+
+    return callback(201, ApiResponse.redirect('/login'));
 }
 
 // GET
 handler._innerMethods.get = async (data, callback) => {
 
-  // 1) suzinoti apie kuri vartotoja norima gauti duomenis
-  const email = data.searchParams.get('email');
+    // 1) suzinoti apie kuri vartotoja norima gauti duomenis
+    const email = data.searchParams.get('email');
 
-  // 2) Patikriname ar gautas email yra email formato
-  const [emailErr, emailMsg] = IsValid.email(email);
-  if (emailErr) {
-    return callback(400, {
-      msgType: 'error',
-      msg: emailMsg,
-    });
-  }
+    // 2) Patikriname ar gautas email yra email formato
+    const [emailErr, emailMsg] = IsValid.email(email);
+    if (emailErr) {
+        return callback(400, ApiResponse.error(emailMsg));
+    }
 
-  // 3) Bandom perskaityti vartotojo duomenis
-  // - jei ERROR - vartotojas neegzistuoja
-  // - jei OK - vartotojas egzistuoja ir gavom jo duomenis
-  const [readErr, readMsg] = await file.read('accounts', email + '.json');
-  if (readErr) {
-    return callback(404, {
-      msgType: 'error',
-      msg: 'Toks vartotojas neegzistouja, arba nepavyko gauti duomenu del teisiu trukumo',
-    });
-  }
+    // 3) Bandom perskaityti vartotojo duomenis
+    // - jei ERROR - vartotojas neegzistuoja
+    // - jei OK - vartotojas egzistuoja ir gavom jo duomenis
+    const [readErr, readMsg] = await file.read('accounts', email + '.json');
+    if (readErr) {
+        return callback(404, ApiResponse.error('Toks vartotojas neegzistouja, arba nepavyko gauti duomenu del teisiu trukumo'));
+    }
 
-  const [userErr, userData] = utils.parseJSONtoObject(readMsg);
-  if (userErr) {
-    return callback(500, {
-      msgType: 'error',
-      msg: 'Nepavyko nuskaityti duomenu',
-    });
-  }
+    const [userErr, userData] = utils.parseJSONtoObject(readMsg);
+    if (userErr) {
+        return callback(500, ApiResponse.error('Nepavyko nuskaityti duomenu'));
+    }
 
-  delete userData.hashedPassword;
+    delete userData.hashedPassword;
 
-  return callback(200, {
-    msgType: 'success',
-    msg: userData,
-  });
+    return callback(200, ApiResponse.success(userData));
 }
 
 // PUT (kapitalinis info pakeistimas)
 // PATCH (vienos info dalies pakeitimas)
 // Leidziam pasikeisti tik: fullname, pass -> hashedPassword
 handler._innerMethods.put = async (data, callback) => {
-  const { payload } = data;
-  const email = data.searchParams.get('email');
+    const { payload } = data;
+    const email = data.searchParams.get('email');
 
-  const [emailErr, emailMsg] = IsValid.email(email);
-  if (emailErr) {
-    return callback(400, {
-      msgType: 'error',
-      msg: emailMsg,
-    });
-  }
-
-  const [validErr, validMsg] = utils.objectValidator(payload, {
-    optional: ['fullname', 'pass'],
-  });
-
-  if (validErr) {
-    return callback(400, {
-      msgType: 'error',
-      msg: validMsg,
-    });
-  }
-
-  const { fullname, pass } = payload;
-
-  if (fullname) {
-    const [fullnameErr, fullnameMsg] = IsValid.fullname(fullname);
-    if (fullnameErr) {
-      return callback(400, {
-        msgType: 'error',
-        msg: fullnameMsg,
-      });
+    const [emailErr, emailMsg] = IsValid.email(email);
+    if (emailErr) {
+        return callback(400, ApiResponse.error(emailMsg));
     }
-  }
 
-  if (pass) {
-    const [passErr, passMsg] = IsValid.password(pass);
-    if (passErr) {
-      return callback(400, {
-        msgType: 'error',
-        msg: passMsg,
-      });
+    const [validErr, validMsg] = utils.objectValidator(payload, {
+        optional: ['fullname', 'pass'],
+    });
+
+    if (validErr) {
+        return callback(400, ApiResponse.error(validMsg));
     }
-  }
 
-  const [readErr, readMsg] = await file.read('accounts', email + '.json');
-  if (readErr) {
-    return callback(404, {
-      msgType: 'error',
-      msg: 'Toks vartotojas neegzistouja, arba nepavyko gauti duomenu del teisiu trukumo',
-    });
-  }
+    const { fullname, pass } = payload;
 
-  const [parseErr, userData] = utils.parseJSONtoObject(readMsg);
-  if (parseErr) {
-    return callback(500, {
-      msgType: 'error',
-      msg: 'Nepavyko atnaujinti paskyros informacijos, del vidines serverio klaidos',
-    });
-  }
+    if (fullname) {
+        const [fullnameErr, fullnameMsg] = IsValid.fullname(fullname);
+        if (fullnameErr) {
+            return callback(400, ApiResponse.error(fullnameMsg));
+        }
+    }
 
-  if (fullname) {
-    userData.fullname = fullname;
-  }
-  if (pass) {
-    userData.hashedPassword = utils.hash(pass)[1];
-  }
+    if (pass) {
+        const [passErr, passMsg] = IsValid.password(pass);
+        if (passErr) {
+            return callback(400, ApiResponse.error(passMsg));
+        }
+    }
 
-  const [updateErr] = await file.update('accounts', email + '.json', userData);
+    const [readErr, readMsg] = await file.read('accounts', email + '.json');
+    if (readErr) {
+        return callback(404, ApiResponse.error('Toks vartotojas neegzistouja, arba nepavyko gauti duomenu del teisiu trukumo'));
+    }
 
-  if (updateErr) {
-    return callback(500, {
-      msgType: 'error',
-      msg: 'Nepavyko atnaujinti paskyros informacijos, del vidines serverio klaidos',
-    });
-  }
+    const [parseErr, userData] = utils.parseJSONtoObject(readMsg);
+    if (parseErr) {
+        return callback(500, ApiResponse.error('Nepavyko atnaujinti paskyros informacijos, del vidines serverio klaidos'));
+    }
 
-  return callback(200, {
-    msgType: 'success',
-    msg: 'Vartotojo informacija sekmingai atnaujinta',
-  });
+    if (fullname) {
+        userData.fullname = fullname;
+    }
+    if (pass) {
+        userData.hashedPassword = utils.hash(pass)[1];
+    }
+
+    const [updateErr] = await file.update('accounts', email + '.json', userData);
+
+    if (updateErr) {
+        return callback(500, ApiResponse.error('Nepavyko atnaujinti paskyros informacijos, del vidines serverio klaidos'));
+    }
+
+    return callback(200, ApiResponse.success('Vartotojo informacija sekmingai atnaujinta'));
 }
 
 // DELETE
 handler._innerMethods.delete = async (data, callback) => {
-  // 1) suzinoti apie kuri vartotoja norima gauti duomenis
-  const email = data.searchParams.get('email');
+    // 1) suzinoti apie kuri vartotoja norima gauti duomenis
+    const email = data.searchParams.get('email');
 
-  // 2) Patikriname ar gautas email yra email formato
-  const [emailErr, emailMsg] = IsValid.email(email);
-  if (emailErr) {
-    return callback(400, {
-      msgType: 'error',
-      msg: emailMsg,
-    });
-  }
+    // 2) Patikriname ar gautas email yra email formato
+    const [emailErr, emailMsg] = IsValid.email(email);
+    if (emailErr) {
+        return callback(400, ApiResponse.error(emailMsg));
+    }
 
-  // 3) Trinam paskyra
-  const [deleteErr] = await file.delete('accounts', email + '.json', userData);
+    // 3) Trinam paskyra
+    const [deleteErr] = await file.delete('accounts', email + '.json', userData);
 
-  if (deleteErr) {
-    return callback(500, {
-      msgType: 'error',
-      msg: 'Nepavyko istrinti paskyros informacijos, del vidines serverio klaidos',
-    });
-  }
+    if (deleteErr) {
+        return callback(500, ApiResponse.error('Nepavyko istrinti paskyros informacijos, del vidines serverio klaidos'));
+    }
 
-  return callback(200, {
-    msgType: 'success',
-    msg: 'Paskyra istrinta sekmingai',
-  });
+    return callback(200, ApiResponse.success('Paskyra istrinta sekmingai'));
 }
 
 export default handler;
